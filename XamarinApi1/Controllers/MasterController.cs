@@ -15,7 +15,8 @@ namespace XamarinApi1.Controllers
     {
         SqlConnection conn;
         [HttpGet]
-        public IEnumerable<Visit> GetVisits()
+        //public IEnumerable<Visit> GetVisits()
+        public System.Web.Http.Results.JsonResult<List<Visit>> GetVisits()
         {
             List<Visit> visitData = new List<Visit>();
 
@@ -47,8 +48,9 @@ namespace XamarinApi1.Controllers
                 
                 visitData.Add(visit);
             }
-
-            return visitData;
+            conn.Close();
+            //return visitData;
+            return this.Json(visitData);
         }
 
         public Response SaveVisit(Visit visit)
@@ -99,7 +101,6 @@ namespace XamarinApi1.Controllers
                     com.Parameters.AddWithValue("@CourtAppearenceTime", visit.CourtAppearenceTime);
                     com.Parameters.AddWithValue("@DateOfOffence", visit.DateOfOffence);
                     com.Parameters.AddWithValue("@DateOfCourtAppearence", visit.DateOfCourtAppearence);
-
                     //adding check-in paramaeters 
                     com.Parameters.AddWithValue("@CheckInTime", visit.CheckInTime);
                     com.Parameters.AddWithValue("@CheckOutTime", visit.CheckOutTime);
@@ -109,12 +110,10 @@ namespace XamarinApi1.Controllers
                     com.Parameters.AddWithValue("@LunchTimeStart", visit.LunchTimeStart);
                     com.Parameters.AddWithValue("@LunchTimeEnd", visit.LunchTimeEnd);
 
-
-
                     conn.Open();
                     int i = com.ExecuteNonQuery();
                     conn.Close();
-                    if(i >= 1)
+                    if (i >= 1)
                     {
                         response.Message = "Visit saved Successfully";
                         response.Status = 1;
